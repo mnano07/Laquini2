@@ -1,0 +1,35 @@
+# Blueprint de Render: crea el servicio web, el disco persistente y las variables.
+# En Render: New +  →  Blueprint  →  conecta este repo  →  Apply.
+# Te pedirá rellenar solo las claves marcadas (API y, si quieres, Telegram).
+services:
+  - type: web
+    name: quiniela-mundial
+    runtime: node
+    plan: starter            # 7 $/mes, siempre encendido y permite disco
+    region: frankfurt        # lo más cerca de España
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    disk:
+      name: data             # guarda la base de datos para que no se borre
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: DATA_DIR
+        value: /var/data
+      - key: WC_LEAGUE_ID
+        value: "1"           # Mundial en API-Football
+      - key: WC_SEASON
+        value: "2026"
+      - key: SYNC_MINUTES
+        value: "30"          # cada 30 min (va sobrado para el plan gratis de la API)
+      - key: API_FOOTBALL_KEY
+        sync: false          # << pega aquí tu clave de api-football.com
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false          # opcional (avisos al móvil)
+      - key: TELEGRAM_CHAT_ID
+        sync: false          # opcional
+      # La contraseña de administrador es 051909 por defecto.
+      # Si quieres otra, añade ADMIN_PASSWORD como variable en el panel de Render.
